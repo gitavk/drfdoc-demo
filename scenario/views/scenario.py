@@ -1,6 +1,7 @@
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.generics import (
-    ListAPIView, CreateAPIView, RetrieveAPIView, DestroyAPIView)
+    ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView,
+    DestroyAPIView)
 
 
 from scenario.models import Scenario
@@ -15,9 +16,11 @@ class ScenarioViewSet(ListAPIView, CreateAPIView, GenericViewSet):
     serializer_class = ScenarioSerializer
 
 
-class ScenarioDetailViewSet(RetrieveAPIView, DestroyAPIView, GenericViewSet):
+class ScenarioDetailViewSet(
+        RetrieveAPIView, UpdateAPIView, DestroyAPIView, GenericViewSet
+        ):
     """
-    Retrieve and Delete operations with Scenario Model via ScenarioSerializer
+    Retrieve, Update and Delete operations with Scenario Model via ScenarioSerializer
     """
     queryset = Scenario.objects.all()
     serializer_class = ScenarioSerializer

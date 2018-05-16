@@ -6,11 +6,17 @@ from .task import TaskSerializer
 
 
 class ScenarioSerializer(serializers.ModelSerializer):
-    tasks = TaskSerializer(many=True, required=False, read_only=True)
+    tasks = serializers.SerializerMethodField()
 
     class Meta:
         model = Scenario
         fields = '__all__'
+
+    def get_tasks(self, obj):
+        qs = obj.tasks.extra(
+            select={'creation_seq': 'scenario_scenario_tasks.id'}
+            ).order_by("creation_seq")
+        return TaskSerializer(qs, many=True).data
 
     def get_or_create_task(self, data):
         qs = Task.objects.filter(pk=data.get('id'))
@@ -39,5 +45,7 @@ class ScenarioSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance = super().update(instance, validated_data)
         data = self.context.get('request').data
+        # clean exists tasks to save sequence as in update
+        instance.tasks.all().delete()
         self.add_tasks(instance, data)
         return instance

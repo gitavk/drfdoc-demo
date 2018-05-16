@@ -11,5 +11,6 @@ class Scenario(models.Model):
     attr project was comment to create a working version of the application
     """
     stakeholder = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name='scenarios', blank=True,)
+        settings.AUTH_USER_MODEL, related_name='scenarios', blank=True,
+        on_delete=None)
     tasks = models.ManyToManyField('scenario.Task', blank=True)
